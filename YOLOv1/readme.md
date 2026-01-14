@@ -14,3 +14,5 @@
 ### Loss - Function
 
 ![loss function png](images/loss_fnc.png)
+- everywhere the indicator function can be replaced with the operation of going through all the cells and finding the highest IoU over all the cells
+- 
