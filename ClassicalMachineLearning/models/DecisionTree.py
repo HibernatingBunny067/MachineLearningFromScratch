@@ -12,14 +12,17 @@ class Node:
         self.value = value
 
 
+##to reuse this decision tree classifier in random forest, we add max_feature subsampling in the tree
+
 class DecisionTreeClassifier:
 
-    def __init__(self, min_samples_split=2, max_depth=2, criterion="gini"):
+    def __init__(self, min_samples_split=2, max_depth=2,criterion="gini",max_features = None):
         self.root = None
         self.min_samples_split = min_samples_split
         self.max_depth = max_depth
         self.criterion = criterion.lower()
         self.is_trained =False
+        self.max_features = max_features
 
     ##building the tree
     def _build_tree(self, X, y, curr_depth):
@@ -56,16 +59,18 @@ class DecisionTreeClassifier:
             info_gain=best_split["info_gain"],
         )
 
-    # --------------------------------------------------
-    # FIND BEST SPLIT
-    # --------------------------------------------------
-
+    
+    ## here we implement the max feature subsampling 
     def _get_best_split(self, X, y, num_samples, num_features):
 
         best_split = {}
         max_info_gain = -float("inf")
 
-        for feature_index in range(num_features):
+        feature_indices = np.arange(num_features)
+        if self.max_features is not None:
+            feature_indices = np.random.choice(num_features,self.max_features,replace=False)
+
+        for feature_index in feature_indices:
             feature_values = X[:, feature_index]
             thresholds = np.unique(feature_values)
 

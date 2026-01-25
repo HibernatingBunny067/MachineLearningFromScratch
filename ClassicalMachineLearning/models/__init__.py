@@ -1,3 +1,4 @@
 from .LinearRegression import LinearRegression
 from .LogisticRegression import LogisticRegression
 from .DecisionTree import DecisionTreeClassifier
+from .RandomForest import RandomForestClassifier
