@@ -72,7 +72,8 @@ class DecisionTreeClassifier:
 
         for feature_index in feature_indices:
             feature_values = X[:, feature_index]
-            thresholds = np.unique(feature_values)
+            values = np.sort(np.unique(feature_values))
+            thresholds = (values[:-1] + values[1:]) / 2
 
             for threshold in thresholds:
 
