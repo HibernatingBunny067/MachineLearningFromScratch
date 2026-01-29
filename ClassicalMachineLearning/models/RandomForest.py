@@ -1,5 +1,5 @@
 import numpy as np
-from .DecisionTree import DecisionTreeClassifier
+from models.DecisionTree import DecisionTreeClassifier
 
 class RandomForestClassifier:
     def __init__(self,n_trees=10,max_depth=6,min_samples_split=2,max_features=None,criterion='gini',verbose=False):
