@@ -12,28 +12,33 @@ class tfidf_vecotrizer():
         self.tfidf = None
         self.eps = 1e-9
 
-    def _get_unique_words(self,x:list[str]) -> list[str]:
+    def _get_unique_words(self,x:list[str]) -> tuple[list[str],dict]:
         unique = []
         seen = set()
         for docs in x:
-            for w in docs.split().lower():
+            words = docs.split() if not self.lower else docs.lower().split()
+            for w in words:
                 if w not in seen:
                     seen.add(w)
                     unique.append(w.lower())
-        return unique
+        word2idx = {word:idx for idx,word in enumerate(unique)}
+        return unique,word2idx
+    
     def fit(self,x:list[str]):
-        unique_words = self._get_unique_words(x)
-        word2idx = {word:idx for idx,word in enumerate(unique_words)}
+        unique_words,word2idx = self._get_unique_words(x)
 
         self.tf = np.zeros((len(x),len(unique_words)))
 
         for doc_idx,doc in enumerate(x):
             for word in doc.split():
-                self.tf[doc_idx][word2idx[word.lower()]] += 1
+                if self.lower:
+                    self.tf[doc_idx][word2idx[word.lower()]] += 1
+                else:
+                    self.tf[doc_idx][word2idx[word]] += 1
 
         self.df = np.sum(self.tf != 0,axis=0)
 
-        idf = np.log(len(x)/self.df) + 1 if not self.smoothed else np.log((len(x)+1)/(self.df+1))
+        idf = np.log(len(x)/self.df) + 1 if not self.smoothed else np.log((len(x)+1)/(self.df+1)) + 1
 
         self.tfidf = self.tf * idf
         
